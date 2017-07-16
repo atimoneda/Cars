@@ -40,6 +40,4 @@ class Car: NSObject {
             self.status = .right
         }
     }
-
-    
 }
