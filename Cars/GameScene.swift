@@ -7,7 +7,7 @@
 //
 
 import SpriteKit
-import GameplayKit
+
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
@@ -68,6 +68,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             roads.addChild(road)
         }
         self.addChild(roads)
+ 
         
         //Añadir el coche
         let textureCarUp = SKTexture(imageNamed: "CarUp")
