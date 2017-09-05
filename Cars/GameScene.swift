@@ -43,11 +43,62 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var score = NSInteger()
     let scoreLabel = SKLabelNode()
     
+    var lives:Int = 3
+    var live1 = SKSpriteNode()
+    var live2 = SKSpriteNode()
+    var live3 = SKSpriteNode()
+    
     override func didMove(to view: SKView) {
         self.backgroundColor = UIColor.clear
         
         self.physicsWorld.contactDelegate = self
         self.initializeApp()
+        
+        let textureCarUp = SKTexture(imageNamed: "CarUp")
+        textureCarUp.filteringMode = SKTextureFilteringMode.nearest
+        
+        let textureCarDown = SKTexture(imageNamed: "CarDown")
+        textureCarDown.filteringMode = SKTextureFilteringMode.nearest
+        
+        //Banner
+        let infoBar = SKSpriteNode(color: UIColor.brown , size: CGSize(width: self.size.width, height: 100))
+        infoBar.anchorPoint = CGPoint.zero
+        infoBar.position = CGPoint(x: 0, y:self.size.height - 100)
+        infoBar.zPosition = 11
+        self.addChild(infoBar)
+        
+        let blackLine = SKSpriteNode(color: UIColor.black, size: CGSize(width: self.size.width, height: 5))
+        blackLine.anchorPoint = CGPoint.zero
+        blackLine.position = CGPoint(x: 0, y: self.size.height - 10)
+        blackLine.zPosition = 12
+        self.addChild(blackLine)
+        
+        self.score = 0
+        self.scoreLabel.fontName = "Arial"
+        self.scoreLabel.fontSize = 40
+        self.scoreLabel.alpha = 1
+        self.scoreLabel.position = CGPoint(x: self.frame.width*0.85, y: self.frame.height-70)
+        self.scoreLabel.zPosition = 12
+        self.scoreLabel.text = "Score: \(score)"
+        self.addChild(self.scoreLabel)
+        
+        live1 = SKSpriteNode(texture: textureCarUp)
+        live1.setScale(0.6)
+        live1.position = CGPoint(x: self.frame.width*0.1, y: self.frame.height-60)
+        live1.zPosition = 12
+        self.addChild(live1)
+        live2 = SKSpriteNode(texture: textureCarUp)
+        live2.setScale(0.6)
+        live2.position = CGPoint(x: self.frame.width*0.2, y: self.frame.height-60)
+        live2.zPosition = 12
+        self.addChild(live2)
+        live3 = SKSpriteNode(texture: textureCarUp)
+        live3.setScale(0.6)
+        live3.position = CGPoint(x: self.frame.width*0.3, y: self.frame.height-60)
+        live3.zPosition = 12
+        self.addChild(live3)
+
+        
 
         //Añadir la carretera
         let textureRoad = SKTexture(imageNamed: "Road")
@@ -68,14 +119,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             roads.addChild(road)
         }
         self.addChild(roads)
- 
         
-        //Añadir el coche
-        let textureCarUp = SKTexture(imageNamed: "CarUp")
-        textureCarUp.filteringMode = SKTextureFilteringMode.nearest
-        
-        let textureCarDown = SKTexture(imageNamed: "CarDown")
-        textureCarDown.filteringMode = SKTextureFilteringMode.nearest
         
         /* to refactor textures */
         blueTextureEnemyUp = SKTexture(imageNamed: "BlueEnemyUp")
@@ -104,9 +148,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         car.node = SKSpriteNode(texture: textureCarUp)
         
         car.node.position = CGPoint(x: self.frame.size.width/2, y: 100)
-        car.node.zPosition = 10
+        car.node.zPosition = 11
         
         //Colisiones
+        //car.node.physicsBody? = false
         car.node.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: car.node.size.width*0.8, height: car.node.size.height*0.8))
         car.node.physicsBody?.affectedByGravity = false
         car.node.physicsBody?.categoryBitMask = categoryCar
@@ -116,15 +161,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         car.node.run(driving)
         
         self.addChild(car.node)
-        
-        self.score = 0
-        self.scoreLabel.fontName = "Arial"
-        self.scoreLabel.fontSize = 60
-        self.scoreLabel.alpha = 0.7
-        self.scoreLabel.position = CGPoint(x: self.frame.width/2, y: self.frame.height-100)
-        self.scoreLabel.zPosition = 11
-        self.scoreLabel.text = "\(score)"
-        self.addChild(self.scoreLabel)
         
         //Enemigos
         textureEnemyUp = SKTexture(imageNamed: "enemyUp")
@@ -160,6 +196,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         //Colisions
         enemy.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width:enemy.size.width*0.8,height:enemy.size.height*0.8))
+        //enemy.physicsBody?.isDynamic = true
         enemy.physicsBody?.affectedByGravity = false
         enemy.physicsBody?.categoryBitMask = categoryEnemy
         enemy.physicsBody?.collisionBitMask = categoryCar
@@ -172,7 +209,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         enemy.run(enemyCycle)
         enemys.addChild(enemy)
-        self.enemys.speed = self.enemys.speed + 0.02
+        if self.enemys.speed < 4 {
+            self.enemys.speed = self.enemys.speed + 0.02
+        }
         if(self.car.node.speed < 2){
             self.car.node.speed = self.car.node.speed + 0.01
         }
@@ -180,10 +219,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.roads.speed = self.roads.speed + 0.02
         }
         self.score = self.score + 1
-        self.scoreLabel.text = "\(self.score)"
-        print("SPEED ENEMY:::\(self.enemys.speed) AND CAR::\(self.car.node.speed)")
+        self.scoreLabel.text = "Score: \(score)"
+        //print("SPEED ENEMY:::\(self.enemys.speed) AND CAR::\(self.car.node.speed)")
     }
 
+    /* Move the car between tracks */
     func moveCarTo(position:Car.Status){
         var pos = POSITION_TRACK_2
         switch position {
@@ -198,6 +238,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.car.node.run(carTurn)
     }
     
+    /* Fix tracks positions and defines enemies color */
     func initializeApp(){
         xTrackPositions[1] = POSITION_TRACK_1 * self.frame.size.width
         xTrackPositions[2] = POSITION_TRACK_2 * self.frame.size.width
@@ -209,6 +250,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         enemyColorTextures[4] = "Green"
     }
     
+    /* Get random color car enemy */
     func getRandomEnemyTexture() -> [SKTexture] {
         var result:[SKTexture]
         let color = enemyColorTextures[arc4random_uniform(4) + 1]!
@@ -228,20 +270,62 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func didBegin(_ contact: SKPhysicsContact) {
-        self.stopMovement()
-        self.reset = true
+        self.lives -= 1
+        if lives == 0 {
+            live1.isHidden = true
+            self.stopMovement()
+            self.reset = true
+        } else {
+            switch(self.lives) {
+            case 2:
+                live3.isHidden = true
+            case 1:
+                live2.isHidden = true
+            default:
+                break
+            }
+            
+            self.pauseMovement()
+            let continueGame = SKAction.run({ () in self.restartGame()})
+            let delayRestart = SKAction.wait(forDuration: 1)
+            let cont = SKAction.sequence([delayRestart, continueGame])
+            self.run(cont)
+            
+            car.node.run(delayRestart)
+            //TODO activar modo invulnerable y parpadear
+        }
     }
     
-    func restartGame(){
+    /* When the game starts, this function prepare the scenario */
+    func newGame(){
         self.car.node.position = CGPoint(x: self.frame.size.width/2, y: 100)
         enemys.speed = 1
         car.node.speed = 1
         roads.speed = 1
         self.score = 0
-        self.scoreLabel.text = "\(self.score)"
+        self.lives = 3
+        self.live1.isHidden = false
+        self.live2.isHidden = false
+        self.live3.isHidden = false
+        self.scoreLabel.text = "Score: \(score)"
         self.startEnemyCycle()
     }
     
+    /* Restart screen movement between lives */
+    func restartGame(){
+        self.car.node.position = CGPoint(x: self.frame.size.width/2, y: 100)
+        car.node.speed = 1
+        self.startEnemyCycle()
+    }
+    
+    /* Pause screen movement between lives */
+    func pauseMovement(){
+        car.node.speed = 0
+        enemys.removeAllChildren()
+        enemys.removeAllActions()
+    }
+    
+    /* Stop screen movements when the game ends */
     func stopMovement(){
         enemys.speed = 0
         car.node.speed = 0
@@ -263,7 +347,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //print("he tocado en: \(touches.first!.location(in: self.view))")
         if(self.reset){
             self.reset = false
-            self.restartGame()
+            self.newGame()
         } else {
         
             if touches.first!.location(in: self.view).x < (self.view?.frame.width)!/2 {
@@ -291,3 +375,5 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
 
 }
+
+//ajustar el angle en que mira el cotxe despres de la colisio
