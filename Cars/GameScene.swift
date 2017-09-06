@@ -69,7 +69,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         let blackLine = SKSpriteNode(color: UIColor.black, size: CGSize(width: self.size.width, height: 5))
         blackLine.anchorPoint = CGPoint.zero
-        blackLine.position = CGPoint(x: 0, y: self.size.height - 10)
+        blackLine.position = CGPoint(x: 0, y: self.size.height - 100)
         blackLine.zPosition = 12
         self.addChild(blackLine)
         
