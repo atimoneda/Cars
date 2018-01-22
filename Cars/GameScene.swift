@@ -29,8 +29,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var yellowTextureEnemyUp = SKTexture()
     var yellowTextureEnemyDown = SKTexture()
     
-    let categoryCar: UInt32 = 1 << 0
-    let categoryEnemy: UInt32 = 1 << 1
+    struct physicsCategory {
+        static let car: UInt32 = 1
+        static let enemy: UInt32 = 2
+    }
     
     let enemys = SKNode()
     let roads = SKNode()
@@ -151,12 +153,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         car.node.zPosition = 11
         
         //Colisiones
-        //car.node.physicsBody? = false
         car.node.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: car.node.size.width*0.8, height: car.node.size.height*0.8))
         car.node.physicsBody?.affectedByGravity = false
-        car.node.physicsBody?.categoryBitMask = categoryCar
-        car.node.physicsBody?.collisionBitMask = categoryEnemy
-        car.node.physicsBody?.contactTestBitMask = categoryEnemy
+        car.node.physicsBody?.allowsRotation = false
+        car.node.physicsBody?.categoryBitMask = physicsCategory.car
+        car.node.physicsBody?.contactTestBitMask = physicsCategory.enemy
+        car.node.physicsBody?.isDynamic = true
+        //car.node.physicsBody?.collisionBitMask = categoryEnemy
+        
         
         car.node.run(driving)
         
@@ -196,11 +200,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         //Colisions
         enemy.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width:enemy.size.width*0.8,height:enemy.size.height*0.8))
-        //enemy.physicsBody?.isDynamic = true
         enemy.physicsBody?.affectedByGravity = false
-        enemy.physicsBody?.categoryBitMask = categoryEnemy
-        enemy.physicsBody?.collisionBitMask = categoryCar
-        enemy.physicsBody?.contactTestBitMask = categoryCar
+        enemy.physicsBody?.allowsRotation = false
+        enemy.physicsBody?.categoryBitMask = physicsCategory.enemy
+        enemy.physicsBody?.contactTestBitMask = physicsCategory.car
+        enemy.physicsBody?.isDynamic = true
+        //enemy.physicsBody?.collisionBitMask = categoryCar
+        
         
         let enemyRide = SKAction.move(to: CGPoint(x: enemy.position.x, y: -enemy.frame.height) , duration: 4)
         let removeEnemy = SKAction.removeFromParent()
@@ -270,6 +276,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func didBegin(_ contact: SKPhysicsContact) {
+        //TODO:: Recognize who is contact with other
         self.lives -= 1
         if lives == 0 {
             live1.isHidden = true
@@ -292,7 +299,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.run(cont)
             
             car.node.run(delayRestart)
-            //TODO activar modo invulnerable y parpadear
         }
     }
     
@@ -375,5 +381,3 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
 
 }
-
-//ajustar el angle en que mira el cotxe despres de la colisio
