@@ -281,6 +281,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if lives == 0 {
             live1.isHidden = true
             self.stopMovement()
+            
+            let gameOverScene = GameOverScene(size:self.size)
+            gameOverScene.scaleMode = scaleMode
+            gameOverScene.score = self.score
+            
+            let transition = SKTransition.flipVertical(withDuration: 1.0)
+            view?.presentScene(gameOverScene, transition:transition)
+
             self.reset = true
         } else {
             switch(self.lives) {

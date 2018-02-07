@@ -18,6 +18,7 @@
 		57771ABF1EE9EFDB00E35D0D /* Car.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57771ABE1EE9EFDB00E35D0D /* Car.swift */; };
 		579D0F351F1BC9DE00A30B01 /* MainMenuScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 579D0F341F1BC9DE00A30B01 /* MainMenuScene.swift */; };
 		579D0F371F1C124000A30B01 /* MainMenuScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 579D0F361F1C124000A30B01 /* MainMenuScene.sks */; };
+		57AD7B7020169BBC00A066D6 /* GameOverScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57AD7B6F20169BBC00A066D6 /* GameOverScene.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +35,7 @@
 		57771ABE1EE9EFDB00E35D0D /* Car.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Car.swift; path = ../Car.swift; sourceTree = "<group>"; };
 		579D0F341F1BC9DE00A30B01 /* MainMenuScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainMenuScene.swift; sourceTree = "<group>"; };
 		579D0F361F1C124000A30B01 /* MainMenuScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = MainMenuScene.sks; sourceTree = "<group>"; };
+		57AD7B6F20169BBC00A066D6 /* GameOverScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOverScene.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +68,7 @@
 		5725A24E1EDE1992002717C9 /* Cars */ = {
 			isa = PBXGroup;
 			children = (
+				57AD7B6F20169BBC00A066D6 /* GameOverScene.swift */,
 				57771ABE1EE9EFDB00E35D0D /* Car.swift */,
 				5725A24F1EDE1992002717C9 /* AppDelegate.swift */,
 				5725A2511EDE1992002717C9 /* GameScene.sks */,
@@ -163,6 +166,7 @@
 				5725A2561EDE1992002717C9 /* GameScene.swift in Sources */,
 				5725A2581EDE1992002717C9 /* GameViewController.swift in Sources */,
 				57771ABF1EE9EFDB00E35D0D /* Car.swift in Sources */,
+				57AD7B7020169BBC00A066D6 /* GameOverScene.swift in Sources */,
 				5725A2501EDE1992002717C9 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
