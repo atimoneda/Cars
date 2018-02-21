@@ -29,9 +29,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var yellowTextureEnemyUp = SKTexture()
     var yellowTextureEnemyDown = SKTexture()
     
+    var liveTexture = SKTexture()
+    
+    let PROBABILITY_LIVE = 0.05
+    
     struct physicsCategory {
         static let car: UInt32 = 1
         static let enemy: UInt32 = 2
+        static let live: UInt32 = 3
     }
     
     let enemys = SKNode()
@@ -49,6 +54,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var live1 = SKSpriteNode()
     var live2 = SKSpriteNode()
     var live3 = SKSpriteNode()
+    var live4 = SKSpriteNode()
+    
     
     override func didMove(to view: SKView) {
         self.backgroundColor = UIColor.clear
@@ -99,8 +106,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         live3.position = CGPoint(x: self.frame.width*0.3, y: self.frame.height-60)
         live3.zPosition = 12
         self.addChild(live3)
-
+        live4 = SKSpriteNode(texture: textureCarUp)
+        live4.setScale(0.6)
+        live4.position = CGPoint(x: self.frame.width*0.4, y: self.frame.height-60)
+        live4.zPosition = 12
+        live4.isHidden = true
+        self.addChild(live4)
         
+        liveTexture = SKTexture(imageNamed: "live")
+        liveTexture.filteringMode = SKTextureFilteringMode.nearest
 
         //Añadir la carretera
         let textureRoad = SKTexture(imageNamed: "Road")
@@ -151,6 +165,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         car.node.position = CGPoint(x: self.frame.size.width/2, y: 100)
         car.node.zPosition = 11
+        car.node.name = "car"
         
         //Colisiones
         car.node.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: car.node.size.width*0.8, height: car.node.size.height*0.8))
@@ -189,44 +204,76 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func manageEnemies(){
         let textures = self.getRandomEnemyTexture()
         
-        let enemyMovement = SKAction.animate(with:textures, timePerFrame: 0.30)
-        let drivingEnemy = SKAction.repeatForever(enemyMovement)
+        if(textures.count == 1){ //if thats true means its a live.
+            let live:SKSpriteNode = SKSpriteNode(texture: textures[0])
+            
+            live.position = CGPoint(x: xTrackPositions[arc4random_uniform(3) + 1]! , y: self.frame.height + live.size.height)
+            live.zPosition = 10
+            live.setScale(0.6)
+            live.name = "live"
+            
+            let reduceLive = SKAction.scale(by: 0.8, duration: 0.5)
+            
+            let continuousScale = SKAction.repeatForever(SKAction.sequence([reduceLive, reduceLive.reversed()]))
+            live.run(continuousScale)
+            
+            live.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width:live.size.width*0.8,height:live.size.height*0.8))
+            live.physicsBody?.affectedByGravity = false
+            live.physicsBody?.allowsRotation = false
+            live.physicsBody?.categoryBitMask = physicsCategory.live
+            live.physicsBody?.contactTestBitMask = physicsCategory.car
+            live.physicsBody?.isDynamic = true
+ 
+            let liveRide = SKAction.move(to: CGPoint(x: live.position.x, y: -live.frame.height) , duration: 4)
+            let removeLive = SKAction.removeFromParent()
+            
+            let liveCycle = SKAction.sequence([liveRide, removeLive])
+            
+            live.run(liveCycle)
+            enemys.addChild(live)
         
-        let enemy = SKSpriteNode(texture: textures[0])
+        } else { //normal enemy
         
-        enemy.position = CGPoint(x: xTrackPositions[arc4random_uniform(3) + 1]! , y: self.frame.height + enemy.size.height)
-        enemy.zPosition = 10
-        enemy.run(drivingEnemy)
-        
-        //Colisions
-        enemy.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width:enemy.size.width*0.8,height:enemy.size.height*0.8))
-        enemy.physicsBody?.affectedByGravity = false
-        enemy.physicsBody?.allowsRotation = false
-        enemy.physicsBody?.categoryBitMask = physicsCategory.enemy
-        enemy.physicsBody?.contactTestBitMask = physicsCategory.car
-        enemy.physicsBody?.isDynamic = true
-        //enemy.physicsBody?.collisionBitMask = categoryCar
-        
-        
-        let enemyRide = SKAction.move(to: CGPoint(x: enemy.position.x, y: -enemy.frame.height) , duration: 4)
-        let removeEnemy = SKAction.removeFromParent()
-        
-        let enemyCycle = SKAction.sequence([enemyRide, removeEnemy])
-        
-        enemy.run(enemyCycle)
-        enemys.addChild(enemy)
-        if self.enemys.speed < 4 {
-            self.enemys.speed = self.enemys.speed + 0.02
+            let enemyMovement = SKAction.animate(with:textures, timePerFrame: 0.30)
+            let drivingEnemy = SKAction.repeatForever(enemyMovement)
+            
+            let enemy = SKSpriteNode(texture: textures[0])
+            
+            enemy.position = CGPoint(x: xTrackPositions[arc4random_uniform(3) + 1]! , y: self.frame.height + enemy.size.height)
+            enemy.zPosition = 10
+            enemy.name = "enemy"
+            enemy.run(drivingEnemy)
+            
+            //Colisions
+            enemy.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width:enemy.size.width*0.8,height:enemy.size.height*0.8))
+            enemy.physicsBody?.affectedByGravity = false
+            enemy.physicsBody?.allowsRotation = false
+            enemy.physicsBody?.categoryBitMask = physicsCategory.enemy
+            enemy.physicsBody?.contactTestBitMask = physicsCategory.car
+            enemy.physicsBody?.isDynamic = true
+            //enemy.physicsBody?.collisionBitMask = categoryCar
+            
+            
+            let enemyRide = SKAction.move(to: CGPoint(x: enemy.position.x, y: -enemy.frame.height) , duration: 4)
+            let removeEnemy = SKAction.removeFromParent()
+            
+            let enemyCycle = SKAction.sequence([enemyRide, removeEnemy])
+            
+            enemy.run(enemyCycle)
+            enemys.addChild(enemy)
+            if self.enemys.speed < 4 {
+                self.enemys.speed = self.enemys.speed + 0.02
+            }
+            if(self.car.node.speed < 2){
+                self.car.node.speed = self.car.node.speed + 0.01
+            }
+            if(self.roads.speed < 2){
+                self.roads.speed = self.roads.speed + 0.02
+            }
+            self.score = self.score + 1
+            self.scoreLabel.text = "Score: \(score)"
+            //print("SPEED ENEMY:::\(self.enemys.speed) AND CAR::\(self.car.node.speed)")
         }
-        if(self.car.node.speed < 2){
-            self.car.node.speed = self.car.node.speed + 0.01
-        }
-        if(self.roads.speed < 2){
-            self.roads.speed = self.roads.speed + 0.02
-        }
-        self.score = self.score + 1
-        self.scoreLabel.text = "Score: \(score)"
-        //print("SPEED ENEMY:::\(self.enemys.speed) AND CAR::\(self.car.node.speed)")
     }
 
     /* Move the car between tracks */
@@ -260,53 +307,95 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func getRandomEnemyTexture() -> [SKTexture] {
         var result:[SKTexture]
         let color = enemyColorTextures[arc4random_uniform(4) + 1]!
-        switch color {
-        case "Yellow":
-            result = [yellowTextureEnemyUp, yellowTextureEnemyDown]
-        case "Blue":
-            result = [blueTextureEnemyUp, blueTextureEnemyDown]
-        case "Red":
-            result = [textureEnemyUp, textureEnemyDown]
-        case "Green":
-            result = [greenTextureEnemyUp, greenTextureEnemyDown]
-        default:
-            result = [textureEnemyUp, textureEnemyDown]
+        
+        let ranNum:Double = Double(arc4random_uniform(100) + 1)
+        let probability = (PROBABILITY_LIVE * 100)
+        let isLive = ranNum < probability
+        
+        if(isLive){
+            result = [liveTexture]
+        } else {
+            switch color {
+            case "Yellow":
+                result = [yellowTextureEnemyUp, yellowTextureEnemyDown]
+            case "Blue":
+                result = [blueTextureEnemyUp, blueTextureEnemyDown]
+            case "Red":
+                result = [textureEnemyUp, textureEnemyDown]
+            case "Green":
+                result = [greenTextureEnemyUp, greenTextureEnemyDown]
+            default:
+                result = [textureEnemyUp, textureEnemyDown]
+            }
         }
+
         return result
     }
     
     func didBegin(_ contact: SKPhysicsContact) {
-        //TODO:: Recognize who is contact with other
-        self.lives -= 1
-        if lives == 0 {
-            live1.isHidden = true
-            self.stopMovement()
-            
-            let gameOverScene = GameOverScene(size:self.size)
-            gameOverScene.scaleMode = scaleMode
-            gameOverScene.score = self.score
-            
-            let transition = SKTransition.flipVertical(withDuration: 1.0)
-            view?.presentScene(gameOverScene, transition:transition)
-
-            self.reset = true
+        let a = contact.bodyA.node?.name
+        let b = contact.bodyB.node?.name
+        
+        print("han chocado: \(String(describing: a)) con \(String(describing: b))")
+        let isLive = (a == "car" && b == "live") || (a == "live" && b == "car")
+        
+        if (a == "live"){
+            contact.bodyA.node?.removeFromParent()
         } else {
-            switch(self.lives) {
-            case 2:
-                live3.isHidden = true
-            case 1:
-                live2.isHidden = true
-            default:
-                break
+            contact.bodyB.node?.removeFromParent()
+        }
+        
+        if(isLive) {
+            if(lives == 4){
+                score += 10
+            } else {
+                score += 5
+                self.lives += 1
+                switch(self.lives) {
+                case 4:
+                    live4.isHidden = false
+                case 3:
+                    live3.isHidden = false
+                case 2:
+                    live2.isHidden = false
+                default:
+                    break
+                }
             }
-            
-            self.pauseMovement()
-            let continueGame = SKAction.run({ () in self.restartGame()})
-            let delayRestart = SKAction.wait(forDuration: 1)
-            let cont = SKAction.sequence([delayRestart, continueGame])
-            self.run(cont)
-            
-            car.node.run(delayRestart)
+        } else {
+            self.lives -= 1
+            if lives == 0 {
+                live1.isHidden = true
+                self.stopMovement()
+                
+                let gameOverScene = GameOverScene(size:self.size)
+                gameOverScene.scaleMode = scaleMode
+                gameOverScene.score = self.score
+                
+                let transition = SKTransition.flipVertical(withDuration: 1.0)
+                view?.presentScene(gameOverScene, transition:transition)
+
+                self.reset = true
+            } else {
+                switch(self.lives) {
+                case 3:
+                    live4.isHidden = true
+                case 2:
+                    live3.isHidden = true
+                case 1:
+                    live2.isHidden = true
+                default:
+                    break
+                }
+                
+                self.pauseMovement()
+                let continueGame = SKAction.run({ () in self.restartGame()})
+                let delayRestart = SKAction.wait(forDuration: 1)
+                let cont = SKAction.sequence([delayRestart, continueGame])
+                self.run(cont)
+                
+                car.node.run(delayRestart)
+            }
         }
     }
     
