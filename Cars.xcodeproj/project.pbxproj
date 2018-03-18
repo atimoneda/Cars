@@ -16,9 +16,11 @@
 		5725A2601EDE1992002717C9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5725A25E1EDE1992002717C9 /* LaunchScreen.storyboard */; };
 		573904E31EE5B381004DBB31 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 573904E21EE5B381004DBB31 /* Images.xcassets */; };
 		57771ABF1EE9EFDB00E35D0D /* Car.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57771ABE1EE9EFDB00E35D0D /* Car.swift */; };
+		578BC69D2050A156007164CF /* Cars.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 578BC69B2050A156007164CF /* Cars.xcdatamodeld */; };
 		579D0F351F1BC9DE00A30B01 /* MainMenuScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 579D0F341F1BC9DE00A30B01 /* MainMenuScene.swift */; };
 		579D0F371F1C124000A30B01 /* MainMenuScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 579D0F361F1C124000A30B01 /* MainMenuScene.sks */; };
 		57AD7B7020169BBC00A066D6 /* GameOverScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57AD7B6F20169BBC00A066D6 /* GameOverScene.swift */; };
+		57D66916204F3C1800E1B012 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57D66915204F3C1700E1B012 /* CoreDataManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,9 +35,11 @@
 		5725A2611EDE1992002717C9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		573904E21EE5B381004DBB31 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		57771ABE1EE9EFDB00E35D0D /* Car.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Car.swift; path = ../Car.swift; sourceTree = "<group>"; };
+		578BC69C2050A156007164CF /* Cars.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Cars.xcdatamodel; sourceTree = "<group>"; };
 		579D0F341F1BC9DE00A30B01 /* MainMenuScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainMenuScene.swift; sourceTree = "<group>"; };
 		579D0F361F1C124000A30B01 /* MainMenuScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = MainMenuScene.sks; sourceTree = "<group>"; };
 		57AD7B6F20169BBC00A066D6 /* GameOverScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOverScene.swift; sourceTree = "<group>"; };
+		57D66915204F3C1700E1B012 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,11 +75,13 @@
 				57AD7B6F20169BBC00A066D6 /* GameOverScene.swift */,
 				57771ABE1EE9EFDB00E35D0D /* Car.swift */,
 				5725A24F1EDE1992002717C9 /* AppDelegate.swift */,
+				578BC69B2050A156007164CF /* Cars.xcdatamodeld */,
 				5725A2511EDE1992002717C9 /* GameScene.sks */,
 				579D0F361F1C124000A30B01 /* MainMenuScene.sks */,
 				5725A2531EDE1992002717C9 /* Actions.sks */,
 				579D0F341F1BC9DE00A30B01 /* MainMenuScene.swift */,
 				5725A2551EDE1992002717C9 /* GameScene.swift */,
+				57D66915204F3C1700E1B012 /* CoreDataManager.swift */,
 				5725A2571EDE1992002717C9 /* GameViewController.swift */,
 				5725A2591EDE1992002717C9 /* Main.storyboard */,
 				5725A25E1EDE1992002717C9 /* LaunchScreen.storyboard */,
@@ -163,10 +169,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				579D0F351F1BC9DE00A30B01 /* MainMenuScene.swift in Sources */,
+				578BC69D2050A156007164CF /* Cars.xcdatamodeld in Sources */,
 				5725A2561EDE1992002717C9 /* GameScene.swift in Sources */,
 				5725A2581EDE1992002717C9 /* GameViewController.swift in Sources */,
 				57771ABF1EE9EFDB00E35D0D /* Car.swift in Sources */,
 				57AD7B7020169BBC00A066D6 /* GameOverScene.swift in Sources */,
+				57D66916204F3C1800E1B012 /* CoreDataManager.swift in Sources */,
 				5725A2501EDE1992002717C9 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -346,6 +354,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		578BC69B2050A156007164CF /* Cars.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				578BC69C2050A156007164CF /* Cars.xcdatamodel */,
+			);
+			currentVersion = 578BC69C2050A156007164CF /* Cars.xcdatamodel */;
+			path = Cars.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 5725A2441EDE1992002717C9 /* Project object */;
 }

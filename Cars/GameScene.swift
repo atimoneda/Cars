@@ -50,7 +50,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var score = NSInteger()
     let scoreLabel = SKLabelNode()
     
-    var lives:Int = 3
+    var lives:Int = 3//3
     var live1 = SKSpriteNode()
     var live2 = SKSpriteNode()
     var live3 = SKSpriteNode()
