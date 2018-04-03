@@ -26,7 +26,7 @@ class CoreDataManager : NSObject{
         let fetchRequest : NSFetchRequest<Score> = NSFetchRequest(entityName: "Score")
         
         do{
-            scores = try self.managedContext?.fetch(fetchRequest) as [Score]!
+            scores = (try self.managedContext?.fetch(fetchRequest) as [Score]?)!
             scores.sort{$0.score > $1.score}
         } catch {
             print("Core Data Error(ath).")

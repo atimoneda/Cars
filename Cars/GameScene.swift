@@ -8,7 +8,6 @@
 
 import SpriteKit
 
-
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var car:Car!
@@ -366,7 +365,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.lives -= 1
             if lives == 0 {
                 live1.isHidden = true
-                self.stopMovement()
                 
                 let gameOverScene = GameOverScene(size:self.size)
                 gameOverScene.scaleMode = scaleMode
@@ -399,40 +397,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
-    /* When the game starts, this function prepare the scenario */
-    func newGame(){
-        self.car.node.position = CGPoint(x: self.frame.size.width/2, y: 100)
-        enemys.speed = 1
-        car.node.speed = 1
-        roads.speed = 1
-        self.score = 0
-        self.lives = 3
-        self.live1.isHidden = false
-        self.live2.isHidden = false
-        self.live3.isHidden = false
-        self.scoreLabel.text = "Score: \(score)"
-        self.startEnemyCycle()
-    }
-    
     /* Restart screen movement between lives */
     func restartGame(){
         self.car.node.position = CGPoint(x: self.frame.size.width/2, y: 100)
-        car.node.speed = 1
         self.startEnemyCycle()
     }
     
     /* Pause screen movement between lives */
     func pauseMovement(){
-        car.node.speed = 0
-        enemys.removeAllChildren()
-        enemys.removeAllActions()
-    }
-    
-    /* Stop screen movements when the game ends */
-    func stopMovement(){
-        enemys.speed = 0
-        car.node.speed = 0
-        roads.speed = 0
         enemys.removeAllChildren()
         enemys.removeAllActions()
     }
@@ -448,20 +420,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         //print("he tocado en: \(touches.first!.location(in: self.view))")
-        if(self.reset){
-            self.reset = false
-            self.newGame()
+        if touches.first!.location(in: self.view).x < (self.view?.frame.width)!/2 {
+            self.car.turnLeft()
         } else {
-        
-            if touches.first!.location(in: self.view).x < (self.view?.frame.width)!/2 {
-                self.car.turnLeft()
-            
-            } else {
-                self.car.turnRight()
-            //self.moveCarTo(position: POSITION_MOVE)
-            }
-            self.moveCarTo(position: self.car.status)
+            self.car.turnRight()
+        //self.moveCarTo(position: POSITION_MOVE)
         }
+        self.moveCarTo(position: self.car.status)
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
