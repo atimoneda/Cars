@@ -44,8 +44,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var xTrackPositions: [UInt32:CGFloat] = [:]
     var enemyColorTextures: [UInt32:String] = [:]
     
-    var reset = false
-    
     var score = NSInteger()
     let scoreLabel = SKLabelNode()
     
@@ -54,6 +52,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var live2 = SKSpriteNode()
     var live3 = SKSpriteNode()
     var live4 = SKSpriteNode()
+    
+    let SCORE_BETWEEN_LIVES:Int = 50;
+    var lastLive: Int = 0;
     
     
     override func didMove(to view: SKView) {
@@ -80,6 +81,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         blackLine.position = CGPoint(x: 0, y: self.size.height - 100)
         blackLine.zPosition = 12
         self.addChild(blackLine)
+        
+        self.lastLive = 0;
         
         self.score = 0
         self.scoreLabel.fontName = "Arial"
@@ -269,7 +272,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if(self.roads.speed < 2){
                 self.roads.speed = self.roads.speed + 0.02
             }
-            self.score = self.score + 1
+            self.lastLive += 1
+            self.score += 1
             self.scoreLabel.text = "Score: \(score)"
             //print("SPEED ENEMY:::\(self.enemys.speed) AND CAR::\(self.car.node.speed)")
         }
@@ -311,7 +315,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let probability = (PROBABILITY_LIVE * 100)
         let isLive = ranNum < probability
         
-        if(isLive){
+        if(isLive && self.lastLive > SCORE_BETWEEN_LIVES){
+            self.lastLive = 0
             result = [liveTexture]
         } else {
             switch color {
@@ -372,8 +377,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 
                 let transition = SKTransition.flipVertical(withDuration: 1.0)
                 view?.presentScene(gameOverScene, transition:transition)
-
-                self.reset = true
             } else {
                 switch(self.lives) {
                 case 3:
