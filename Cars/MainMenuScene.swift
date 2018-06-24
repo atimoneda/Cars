@@ -50,7 +50,7 @@ class MainMenuScene: SKScene {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
     
         let gameScene = GameScene(size: self.size)
-        //gameScene.scaleMode = .aspectFit
+        gameScene.scaleMode = .aspectFit
         
         let transition = SKTransition.reveal(with: .right, duration: 1.0)
         self.removeAllActions()

@@ -56,23 +56,87 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let SCORE_BETWEEN_LIVES:Int = 50;
     var lastLive: Int = 0;
     
+    var textureCarUp = SKTexture()
+    var textureCarDown = SKTexture()
+    
+    var gameStatus:GameStatus = GameStatus.loading
+    enum GameStatus{
+        case loading
+        case playing
+    }
     
     override func didMove(to view: SKView) {
         self.backgroundColor = UIColor.clear
         
         self.physicsWorld.contactDelegate = self
-        self.initializeApp()
         
-        let textureCarUp = SKTexture(imageNamed: "CarUp")
+        self.initializeApp()
+ 
+        print("la pantalla mide \(self.frame.size)")
+    }
+    
+    /* Fix tracks positions, defines enemies color and prepare scene*/
+    func initializeApp(){
+        self.setTextures()
+        self.showBar()
+        self.showBackground()
+        self.showPlayer()
+        
+        xTrackPositions[1] = POSITION_TRACK_1 * self.frame.size.width
+        xTrackPositions[2] = POSITION_TRACK_2 * self.frame.size.width
+        xTrackPositions[3] = POSITION_TRACK_3 * self.frame.size.width
+        
+        enemyColorTextures[1] = "Red"
+        enemyColorTextures[2] = "Blue"
+        enemyColorTextures[3] = "Yellow"
+        enemyColorTextures[4] = "Green"
+        
+        //Enemigos
+        textureEnemyUp = SKTexture(imageNamed: "enemyUp")
+        textureEnemyUp.filteringMode = SKTextureFilteringMode.nearest
+        
+        textureEnemyDown = SKTexture(imageNamed: "enemyDown")
+        textureEnemyDown.filteringMode = SKTextureFilteringMode.nearest
+        self.addChild(enemys)
+        self.startEnemyCycle()
+        
+        self.gameStatus = .playing
+    }
+    
+    func setTextures(){
+        textureCarUp = SKTexture(imageNamed: "CarUp")
         textureCarUp.filteringMode = SKTextureFilteringMode.nearest
         
-        let textureCarDown = SKTexture(imageNamed: "CarDown")
+        textureCarDown = SKTexture(imageNamed: "CarDown")
         textureCarDown.filteringMode = SKTextureFilteringMode.nearest
         
+        liveTexture = SKTexture(imageNamed: "live")
+        liveTexture.filteringMode = SKTextureFilteringMode.nearest
+        
+        blueTextureEnemyUp = SKTexture(imageNamed: "BlueEnemyUp")
+        blueTextureEnemyUp.filteringMode = SKTextureFilteringMode.nearest
+        
+        blueTextureEnemyDown = SKTexture(imageNamed: "BlueEnemyDown")
+        blueTextureEnemyDown.filteringMode = SKTextureFilteringMode.nearest
+        
+        greenTextureEnemyUp = SKTexture(imageNamed: "GreenEnemyUp")
+        greenTextureEnemyUp.filteringMode = SKTextureFilteringMode.nearest
+        
+        greenTextureEnemyDown = SKTexture(imageNamed: "GreenEnemyDown")
+        greenTextureEnemyDown.filteringMode = SKTextureFilteringMode.nearest
+        
+        yellowTextureEnemyUp = SKTexture(imageNamed: "YellowEnemyUp")
+        yellowTextureEnemyUp.filteringMode = SKTextureFilteringMode.nearest
+        
+        yellowTextureEnemyDown = SKTexture(imageNamed: "YellowEnemyDown")
+        yellowTextureEnemyDown.filteringMode = SKTextureFilteringMode.nearest
+    }
+    
+    func showBar() {
         //Banner
-        let infoBar = SKSpriteNode(color: UIColor.brown , size: CGSize(width: self.size.width, height: 100))
+        let infoBar = SKSpriteNode(color: UIColor.brown , size: CGSize(width: self.size.width, height: (self.size.height)*0.075))
         infoBar.anchorPoint = CGPoint.zero
-        infoBar.position = CGPoint(x: 0, y:self.size.height - 100)
+        infoBar.position = CGPoint(x: 0, y:(self.size.height - ((self.size.height)*0.075)))
         infoBar.zPosition = 11
         self.addChild(infoBar)
         
@@ -114,10 +178,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         live4.zPosition = 12
         live4.isHidden = true
         self.addChild(live4)
-        
-        liveTexture = SKTexture(imageNamed: "live")
-        liveTexture.filteringMode = SKTextureFilteringMode.nearest
-
+    }
+    
+    func showBackground() {
         //Añadir la carretera
         let textureRoad = SKTexture(imageNamed: "Road")
         textureRoad.filteringMode = SKTextureFilteringMode.nearest
@@ -137,28 +200,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             roads.addChild(road)
         }
         self.addChild(roads)
-        
-        
-        /* to refactor textures */
-        blueTextureEnemyUp = SKTexture(imageNamed: "BlueEnemyUp")
-        blueTextureEnemyUp.filteringMode = SKTextureFilteringMode.nearest
-        
-        blueTextureEnemyDown = SKTexture(imageNamed: "BlueEnemyDown")
-        blueTextureEnemyDown.filteringMode = SKTextureFilteringMode.nearest
-        
-        greenTextureEnemyUp = SKTexture(imageNamed: "GreenEnemyUp")
-        greenTextureEnemyUp.filteringMode = SKTextureFilteringMode.nearest
-        
-        greenTextureEnemyDown = SKTexture(imageNamed: "GreenEnemyDown")
-        greenTextureEnemyDown.filteringMode = SKTextureFilteringMode.nearest
-        
-        yellowTextureEnemyUp = SKTexture(imageNamed: "YellowEnemyUp")
-        yellowTextureEnemyUp.filteringMode = SKTextureFilteringMode.nearest
-        
-        yellowTextureEnemyDown = SKTexture(imageNamed: "YellowEnemyDown")
-        yellowTextureEnemyDown.filteringMode = SKTextureFilteringMode.nearest
-        /* end */
-        
+    }
+    
+    func showPlayer() {
         let carMovement = SKAction.animate(with: [textureCarDown, textureCarUp], timePerFrame: 0.30)
         let driving = SKAction.repeatForever(carMovement)
         
@@ -178,24 +222,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         car.node.physicsBody?.isDynamic = true
         //car.node.physicsBody?.collisionBitMask = categoryEnemy
         
-        
         car.node.run(driving)
         
         self.addChild(car.node)
-        
-        //Enemigos
-        textureEnemyUp = SKTexture(imageNamed: "enemyUp")
-        textureEnemyUp.filteringMode = SKTextureFilteringMode.nearest
-        
-        textureEnemyDown = SKTexture(imageNamed: "enemyDown")
-        textureEnemyDown.filteringMode = SKTextureFilteringMode.nearest
-        self.addChild(enemys)
-        self.startEnemyCycle()
- 
-        print("la pantalla mide \(self.frame.size)")
     }
     
-    func startEnemyCycle(){
+    func startEnemyCycle() {
         let createEnemy = SKAction.run({ () in self.manageEnemies()})
         let delayEnemies = SKAction.wait(forDuration: 0.8)
         let createNextEnemy = SKAction.sequence([createEnemy, delayEnemies])
@@ -203,7 +235,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         enemys.run(continuousEnemies)
     }
     
-    func manageEnemies(){
+    func manageEnemies() {
         let textures = self.getRandomEnemyTexture()
         
         if(textures.count == 1){ //if thats true means its a live.
@@ -294,18 +326,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.car.node.run(carTurn)
     }
     
-    /* Fix tracks positions and defines enemies color */
-    func initializeApp(){
-        xTrackPositions[1] = POSITION_TRACK_1 * self.frame.size.width
-        xTrackPositions[2] = POSITION_TRACK_2 * self.frame.size.width
-        xTrackPositions[3] = POSITION_TRACK_3 * self.frame.size.width
-        
-        enemyColorTextures[1] = "Red"
-        enemyColorTextures[2] = "Blue"
-        enemyColorTextures[3] = "Yellow"
-        enemyColorTextures[4] = "Green"
-    }
-    
     /* Get random color car enemy */
     func getRandomEnemyTexture() -> [SKTexture] {
         var result:[SKTexture]
@@ -349,53 +369,65 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             contact.bodyB.node?.removeFromParent()
         }
         
-        if(isLive) {
-            if(lives == 4){
-                score += 10
-            } else {
-                score += 5
-                self.lives += 1
-                switch(self.lives) {
-                case 4:
-                    live4.isHidden = false
-                case 3:
-                    live3.isHidden = false
-                case 2:
-                    live2.isHidden = false
-                default:
-                    break
-                }
-            }
+        if(isLive) { //collision player/live
+            self.increaseLive()
         } else {
-            self.lives -= 1
-            if lives == 0 {
-                live1.isHidden = true
-                
-                let gameOverScene = GameOverScene(size:self.size)
-                gameOverScene.scaleMode = scaleMode
-                gameOverScene.score = self.score
-                
-                let transition = SKTransition.flipVertical(withDuration: 1.0)
-                view?.presentScene(gameOverScene, transition:transition)
-            } else {
-                switch(self.lives) {
-                case 3:
-                    live4.isHidden = true
-                case 2:
-                    live3.isHidden = true
-                case 1:
-                    live2.isHidden = true
-                default:
-                    break
-                }
-                
-                self.pauseMovement()
-                let continueGame = SKAction.run({ () in self.restartGame()})
-                let delayRestart = SKAction.wait(forDuration: 1)
-                let cont = SKAction.sequence([delayRestart, continueGame])
-                self.run(cont)
-                
-                car.node.run(delayRestart)
+            self.decraseLive()
+        }
+    }
+    
+    /* Decrease game live*/
+    func decraseLive(){
+        self.gameStatus = .loading
+        self.lives -= 1
+        if lives == 0 {
+            live1.isHidden = true
+            
+            let gameOverScene = GameOverScene(size:self.size)
+            gameOverScene.scaleMode = scaleMode
+            gameOverScene.score = self.score
+            
+            let transition = SKTransition.flipVertical(withDuration: 1.0)
+            view?.presentScene(gameOverScene, transition:transition)
+        } else { //collision player/enemy
+            switch(self.lives) {
+            case 3:
+                live4.isHidden = true
+            case 2:
+                live3.isHidden = true
+            case 1:
+                live2.isHidden = true
+            default:
+                break
+            }
+            
+            self.pauseMovement()
+            let continueGame = SKAction.run({ () in self.restartGame()})
+            let delayRestart = SKAction.wait(forDuration: 1)
+            let cont = SKAction.sequence([delayRestart, continueGame])
+            self.run(cont)
+            
+            car.node.run(delayRestart)
+        }
+
+    }
+    
+    /* Increase game live */
+    func increaseLive(){
+        if(lives == 4){
+            score += 10
+        } else {
+            score += 5
+            self.lives += 1
+            switch(self.lives) {
+            case 4:
+                live4.isHidden = false
+            case 3:
+                live3.isHidden = false
+            case 2:
+                live2.isHidden = false
+            default:
+                break
             }
         }
     }
@@ -404,6 +436,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func restartGame(){
         self.car.node.position = CGPoint(x: self.frame.size.width/2, y: 100)
         self.startEnemyCycle()
+        self.gameStatus = .playing
     }
     
     /* Pause screen movement between lives */
@@ -423,13 +456,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         //print("he tocado en: \(touches.first!.location(in: self.view))")
-        if touches.first!.location(in: self.view).x < (self.view?.frame.width)!/2 {
-            self.car.turnLeft()
-        } else {
-            self.car.turnRight()
-        //self.moveCarTo(position: POSITION_MOVE)
+        if(self.gameStatus == .playing){
+            if touches.first!.location(in: self.view).x < (self.view?.frame.width)!/2 {
+                self.car.turnLeft()
+            } else {
+                self.car.turnRight()
+            //self.moveCarTo(position: POSITION_MOVE)
+            }
+            self.moveCarTo(position: self.car.status)
         }
-        self.moveCarTo(position: self.car.status)
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
