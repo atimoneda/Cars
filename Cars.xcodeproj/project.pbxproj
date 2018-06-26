@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		570FB82820E182F8002A17A0 /* Smoke.sks in Resources */ = {isa = PBXBuildFile; fileRef = 570FB82620E182F8002A17A0 /* Smoke.sks */; };
+		570FB82920E182F8002A17A0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 570FB82720E182F8002A17A0 /* Assets.xcassets */; };
 		5725A2501EDE1992002717C9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5725A24F1EDE1992002717C9 /* AppDelegate.swift */; };
 		5725A2521EDE1992002717C9 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 5725A2511EDE1992002717C9 /* GameScene.sks */; };
 		5725A2541EDE1992002717C9 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = 5725A2531EDE1992002717C9 /* Actions.sks */; };
@@ -24,6 +26,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		570FB82620E182F8002A17A0 /* Smoke.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Smoke.sks; sourceTree = "<group>"; };
+		570FB82720E182F8002A17A0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5725A24C1EDE1992002717C9 /* Cars.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cars.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5725A24F1EDE1992002717C9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5725A2511EDE1992002717C9 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -56,6 +60,7 @@
 		5725A2431EDE1992002717C9 = {
 			isa = PBXGroup;
 			children = (
+				570FB82720E182F8002A17A0 /* Assets.xcassets */,
 				5725A24E1EDE1992002717C9 /* Cars */,
 				5725A24D1EDE1992002717C9 /* Products */,
 			);
@@ -72,6 +77,7 @@
 		5725A24E1EDE1992002717C9 /* Cars */ = {
 			isa = PBXGroup;
 			children = (
+				570FB82620E182F8002A17A0 /* Smoke.sks */,
 				57AD7B6F20169BBC00A066D6 /* GameOverScene.swift */,
 				57771ABE1EE9EFDB00E35D0D /* Car.swift */,
 				5725A24F1EDE1992002717C9 /* AppDelegate.swift */,
@@ -154,9 +160,11 @@
 			files = (
 				5725A25B1EDE1992002717C9 /* Main.storyboard in Resources */,
 				573904E31EE5B381004DBB31 /* Images.xcassets in Resources */,
+				570FB82820E182F8002A17A0 /* Smoke.sks in Resources */,
 				5725A2521EDE1992002717C9 /* GameScene.sks in Resources */,
 				5725A2601EDE1992002717C9 /* LaunchScreen.storyboard in Resources */,
 				579D0F371F1C124000A30B01 /* MainMenuScene.sks in Resources */,
+				570FB82920E182F8002A17A0 /* Assets.xcassets in Resources */,
 				5725A2541EDE1992002717C9 /* Actions.sks in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

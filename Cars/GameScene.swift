@@ -64,6 +64,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         case loading
         case playing
     }
+    let smoke = SKEmitterNode(fileNamed: "Smoke")!
     
     override func didMove(to view: SKView) {
         self.backgroundColor = UIColor.clear
@@ -99,6 +100,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         textureEnemyDown.filteringMode = SKTextureFilteringMode.nearest
         self.addChild(enemys)
         self.startEnemyCycle()
+        
+        smoke.position = CGPoint(x:self.car.node.position.x, y:self.car.node.position.y)
+        smoke.targetNode = self
+        addChild(smoke)
         
         self.gameStatus = .playing
     }
@@ -322,8 +327,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         case .right:
             pos = POSITION_TRACK_3
         }
-        let carTurn = SKAction.move(to: CGPoint(x:(self.frame.size.width) * pos, y: 100), duration: 0.5)
-        self.car.node.run(carTurn)
+        let moveAction = SKAction.move(to: CGPoint(x:(self.frame.size.width) * pos, y: 100), duration: 0.5)
+        self.smoke.run(moveAction)
+        self.car.node.run(moveAction)
     }
     
     /* Get random color car enemy */
@@ -402,12 +408,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
             
             self.pauseMovement()
+            self.gameStatus = .playing
             let continueGame = SKAction.run({ () in self.restartGame()})
             let delayRestart = SKAction.wait(forDuration: 1)
             let cont = SKAction.sequence([delayRestart, continueGame])
             self.run(cont)
             
             car.node.run(delayRestart)
+            self.updateParticle()
         }
 
     }
@@ -429,20 +437,38 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             default:
                 break
             }
+            self.updateParticle()
         }
     }
     
     /* Restart screen movement between lives */
     func restartGame(){
         self.car.node.position = CGPoint(x: self.frame.size.width/2, y: 100)
+        self.smoke.position = self.car.node.position
         self.startEnemyCycle()
-        self.gameStatus = .playing
     }
     
     /* Pause screen movement between lives */
     func pauseMovement(){
         enemys.removeAllChildren()
         enemys.removeAllActions()
+    }
+    
+    func updateParticle(){
+        switch(self.lives){
+        case 1:
+            self.smoke.particleBirthRate = 50;
+            self.smoke.xAcceleration = 100;
+            self.smoke.yAcceleration = 60;
+            self.smoke.particleScaleSpeed = 0.5;
+        case 2:
+            self.smoke.particleBirthRate = 50;
+            self.smoke.xAcceleration = 10;
+            self.smoke.yAcceleration = 10;
+            self.smoke.particleScaleSpeed = 0.0;
+        default:
+            self.smoke.particleBirthRate = 0;
+        }
     }
     
     func touchDown(atPoint pos : CGPoint) {
